@@ -11,7 +11,7 @@ public class InputReader : ScriptableObject,IPlayerActions
     private Controls _controlAction;
     private void OnEnable()
     {
-        if(_controlAction == null)
+        if (_controlAction == null)
         {
             _controlAction = new Controls();
             _controlAction.Player.SetCallbacks(this); //플레이어 인풋이 발생하면 이 인스턴스를 연결해주고
