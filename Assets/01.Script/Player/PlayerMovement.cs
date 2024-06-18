@@ -8,18 +8,26 @@ public class PlayerMovement : NetworkBehaviour
 {
 
     [Header("Data")]
-    [SerializeField] private InputReader _inputReader;
+    public InputReader _inputReader;
+    [SerializeField] private Transform _groundCheckTrm;
+    [SerializeField] private Vector3 _groundCheckSize;
+    [SerializeField] private LayerMask _groundLayer;
 
-    private Rigidbody2D _rigidbody;
 
     [Header("Settings")]
     [SerializeField] private float _movementSpeed = 4f; //이동속도
 
+    public bool IsGround { get; private set; }
+    public float XMove { get; private set; }
+
     private Vector2 _movementInput;
+    private Rigidbody2D _rigidbody;
+    private Player _player;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
+        _player = GetComponent<Player>();
     }
 
     public override void OnNetworkSpawn()
@@ -38,16 +46,28 @@ public class PlayerMovement : NetworkBehaviour
     private void HandleMovement(Vector2 movement)
     {
         _movementInput = movement;
+        XMove = _movementInput.x;
     }
 
     private void FixedUpdate()
     {
  
         if (!IsOwner) return; //오너가 아니면 리턴
+        float xVelocity = XMove * _movementSpeed;
+        _rigidbody.velocity = new Vector2(xVelocity, _rigidbody.velocity.y);
+        CheckGround();
+    }
 
-        _rigidbody.velocity = _movementInput * _movementSpeed;
-        //Debug.Log(_rigidbody.velocity);
+    public void CheckGround()
+    {
+        Collider2D collider = Physics2D.OverlapBox(_groundCheckTrm.position, _groundCheckSize, 0, _groundLayer);
+        IsGround = collider != null;
+    }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(_groundCheckTrm.position, _groundCheckSize);
     }
 
 }

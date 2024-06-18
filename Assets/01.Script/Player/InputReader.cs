@@ -7,6 +7,7 @@ using System;
 public class InputReader : ScriptableObject,IPlayerActions
 {
     public event Action<Vector2> MovementEvent;
+    public event Action OnJumpEvent;
 
     private Controls _controlAction;
     private void OnEnable()
@@ -25,5 +26,11 @@ public class InputReader : ScriptableObject,IPlayerActions
         MovementEvent?.Invoke(vec);
     }
 
-   
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            OnJumpEvent?.Invoke();
+        }
+    }
 }
