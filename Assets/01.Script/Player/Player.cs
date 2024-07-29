@@ -17,9 +17,13 @@ public class Player : NetworkBehaviour
     public Animator AnimCompo { get; private set; }
 
     public PlayerStateMachine stateMachine;
+    Transform spawnPoint;
 
     private void Awake()
     {
+
+        
+
         MoveCompo = GetComponent<PlayerMovement>();
         AnimCompo = GetComponentInChildren<Animator>();
 
@@ -30,6 +34,7 @@ public class Player : NetworkBehaviour
         stateMachine.AddState(PlayerStateEnum.Jump, new PlayerJumpState(this, stateMachine, "Jump"));
 
         stateMachine.InitState(PlayerStateEnum.Idle, this);
+
 
     }
 
